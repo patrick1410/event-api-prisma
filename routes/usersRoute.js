@@ -37,14 +37,26 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.post("/", authMiddleware, (req, res) => {
+// router.post("/", authMiddleware, (req, res) => {
+//   try {
+//     const { username, password, name, image } = req.body;
+//     const newUser = createUser(username, password, name, image);
+//     res.status(201).json(newUser);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send("Something went wrong while creating new user!");
+//   }
+// });
+
+//NEW
+
+router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const { username, password, name, image } = req.body;
-    const newUser = createUser(username, password, name, image);
-    res.status(201).json(newUser);
+    const newUser = await createUser(username, password, name, image);
+    res.status(201).json(newCategory);
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Something went wrong while creating new user!");
+    next(error);
   }
 });
 

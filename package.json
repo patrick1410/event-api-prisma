@@ -1,0 +1,27 @@
+{
+  "name": "event-api-prisma",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "test-positive": "newman run \"./postman/collections/Events API.json\" -e \"../event-api-prisma/postman/environments/Local.postman_environment.json\"",
+    "test-negative": "newman run \"./postman/collections/Events API Negative.json\" -e \"../event-api-prisma/postman/environments/Local.postman_environment.json\"",
+    "test": "npm run test-positive && npm run test-negative"
+  },
+  "author": "Patrick",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@sentry/node": "^8.8.0",
+    "@sentry/profiling-node": "^8.8.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^10.0.0",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.3"
+  }
+}

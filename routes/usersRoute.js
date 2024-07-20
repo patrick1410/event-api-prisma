@@ -11,30 +11,31 @@ import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+//NEW
+router.get("/", async (req, res, next) => {
   try {
-    const users = getUsers();
+    const users = await getUsers();
     res.status(200).json(users);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Something went wrong while getting list of users!");
+    next(error);
   }
 });
 
-router.get(
-  "/:id",
-  (req, res) => {
+//NEW
+router.get("/:id", async (req, res, next) => {
+  try {
     const { id } = req.params;
-    const user = getUserById(id);
+    const user = await getUserById(id);
 
     if (!user) {
       res.status(404).json({ message: `User with id ${id} was not found!` });
     } else {
       res.status(200).json(user);
     }
-  },
-  notFoundErrorHandler
-);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.post("/", authMiddleware, (req, res) => {
   try {

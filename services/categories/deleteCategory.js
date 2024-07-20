@@ -1,15 +1,10 @@
-import categoryData from "../../data/categories.json" assert { type: "json" };
-import NotFoundError from "../../errors/NotFoundError.js";
+import { PrismaClient } from "@prisma/client";
 
-export const deleteCategory = (id) => {
-  const index = categoryData.categories.findIndex(
-    (category) => category.id === id
-  );
+export const deleteCategory = async (id) => {
+  const prisma = new PrismaClient();
+  const category = await prisma.category.deleteMany({
+    where: { id },
+  });
 
-  if (index === -1) {
-    throw new NotFoundError("Category", id);
-  }
-
-  categoryData.categories.splice(index, 1);
-  return id;
+  return category.count > 0 ? id : null;
 };

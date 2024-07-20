@@ -1,7 +1,8 @@
-import categoryData from "../../data/categories.json" assert { type: "json" };
+import { PrismaClient } from "@prisma/client";
 
-export const getCategories = () => {
-  const categories = categoryData.categories;
+export const getCategories = async () => {
+  const prisma = new PrismaClient();
+  const categories = await prisma.category.findMany();
 
   return categories;
 };

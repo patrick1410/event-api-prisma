@@ -7,27 +7,22 @@ import { updateCategoryById } from "../services/categories/updateCategoryById.js
 import { deleteCategory } from "../services/categories/deleteCategory.js";
 
 import authMiddleware from "../middleware/auth.js";
-import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
-    const categories = getCategories();
-    res.status(200).json(categories);
+    const categories = await getCategories();
+    res.json(categories);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .send("Something went wrong while getting list of categories!");
+    next(error);
   }
 });
 
-router.get(
-  "/:id",
-  (req, res) => {
+router.get("/:id", async (req, res, next) => {
+  try {
     const { id } = req.params;
-    const category = getCategoryById(id);
+    const category = await getCategoryById(id);
 
     if (!category) {
       res
@@ -36,20 +31,10 @@ router.get(
     } else {
       res.status(200).json(category);
     }
-  },
-  notFoundErrorHandler
-);
-
-// router.post("/", authMiddleware, (req, res) => {
-//   try {
-//     const { name } = req.body;
-//     const newCategory = createCategory(name);
-//     res.status(201).json(newCategory);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send("Something went wrong while creating new category!");
-//   }
-// });
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.post("/", authMiddleware, async (req, res, next) => {
   try {
@@ -62,34 +47,75 @@ router.post("/", authMiddleware, async (req, res, next) => {
   }
 });
 
-router.put(
-  "/:id",
-  authMiddleware,
-  (req, res) => {
+router.put("/:id", authMiddleware, async (req, res, next) => {
+  try {
     const { id } = req.params;
     const { name } = req.body;
-    const updatedCategory = updateCategoryById(id, name);
-    res.status(200).json(updatedCategory);
-  },
-  notFoundErrorHandler
-);
+    const category = await updateCategoryById(id, { name });
 
-router.delete(
-  "/:id",
-  authMiddleware,
-  (req, res) => {
-    const { id } = req.params;
-    const deletedCategoryId = deleteCategory(id);
-
-    if (!deletedCategoryId) {
-      res.status(404).send(`Category with id ${id} was not found!`);
+    if (category) {
+      res.status(200).send({
+        message: `Category with id ${id} was updated!`,
+      });
     } else {
-      res.status(200).json({
-        message: `Category with id ${deletedCategoryId} was deleted!`,
+      res.status(404).json({
+        message: `Category with id ${id} was not found!`,
       });
     }
-  },
-  notFoundErrorHandler
-);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/:id", authMiddleware, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const category = await deleteCategory(id);
+
+    if (category) {
+      res.status(200).send({
+        message: `Category with id ${id} was deleted!`,
+      });
+    } else {
+      res.status(404).json({
+        message: `Category with id ${id} was not found!`,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+// router.put("/:id", authMiddleware, async (req, res, next) => {
+//   try {
+//     const { id } = req.params;
+//     const { name } = req.body;
+//     const updatedCategory = await updateCategoryById(id, name);
+//     if (!updatedCategory) {
+//       res.status(404).json({
+//         message: `Category with id ${id} was not found!`,
+//       });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+// router.delete("/:id", authMiddleware, async (req, res, next) => {
+//   try {
+//     const { id } = req.params;
+//     const deletedCategoryId = await deleteCategory(id);
+//     if (deletedCategoryId) {
+//       res.status(200).send({
+//         message: `Category with id ${id} was deleted!`,
+//       });
+//     } else {
+//       res.status(404).json({
+//         message: `Category with id ${id} was not found!`,
+//       });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 export default router;

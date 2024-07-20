@@ -85,37 +85,5 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
     next(error);
   }
 });
-// router.put("/:id", authMiddleware, async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-//     const { name } = req.body;
-//     const updatedCategory = await updateCategoryById(id, name);
-//     if (!updatedCategory) {
-//       res.status(404).json({
-//         message: `Category with id ${id} was not found!`,
-//       });
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// router.delete("/:id", authMiddleware, async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-//     const deletedCategoryId = await deleteCategory(id);
-//     if (deletedCategoryId) {
-//       res.status(200).send({
-//         message: `Category with id ${id} was deleted!`,
-//       });
-//     } else {
-//       res.status(404).json({
-//         message: `Category with id ${id} was not found!`,
-//       });
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 export default router;

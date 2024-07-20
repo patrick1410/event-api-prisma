@@ -40,14 +40,25 @@ router.get(
   notFoundErrorHandler
 );
 
-router.post("/", authMiddleware, (req, res) => {
+// router.post("/", authMiddleware, (req, res) => {
+//   try {
+//     const { name } = req.body;
+//     const newCategory = createCategory(name);
+//     res.status(201).json(newCategory);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send("Something went wrong while creating new category!");
+//   }
+// });
+
+router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const { name } = req.body;
-    const newCategory = createCategory(name);
+    const newCategory = await createCategory(name);
+
     res.status(201).json(newCategory);
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Something went wrong while creating new category!");
+    next(error);
   }
 });
 

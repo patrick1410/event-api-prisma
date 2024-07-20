@@ -1,9 +1,10 @@
-import eventData from "../../data/events.json" assert { type: "json" };
-import NotFoundError from "../../errors/NotFoundError.js";
+import { PrismaClient } from "@prisma/client";
 
-export const getEventById = (id) => {
-  if (!id) {
-    throw new NotFoundError("Event", id);
-  }
-  return eventData.events.find((event) => event.id === id);
+export const getEventById = async (id) => {
+  const prisma = new PrismaClient();
+  const event = await prisma.event.findUnique({
+    where: { id },
+  });
+
+  return event;
 };

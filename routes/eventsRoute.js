@@ -11,58 +11,59 @@ import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+//NEW
+router.get("/", async (req, res, next) => {
   try {
     const { title } = req.query;
-    const events = getEvents(title);
+    const events = await getEvents(title);
     res.status(200).json(events);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Something went wrong while getting list of events!");
+    next(error);
   }
 });
 
-router.get(
-  "/:id",
-  (req, res) => {
+//NEW
+router.get("/:id", async (req, res, next) => {
+  try {
     const { id } = req.params;
-    const event = getEventById(id);
+    const event = await getEventById(id);
 
     if (!event) {
       res.status(404).json({ message: `Event with id ${id} was not found!` });
     } else {
       res.status(200).json(event);
     }
-  },
-  notFoundErrorHandler
-);
+  } catch (error) {
+    next(error);
+  }
+});
 
-router.post("/", authMiddleware, (req, res) => {
+//NEW
+router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const {
-      createdBy,
       title,
       description,
-      image,
-      categoryIds,
       location,
+      image,
       startTime,
       endTime,
-    } = req.body;
-    const newEvent = createEvent(
       createdBy,
+      categoryIds,
+    } = req.body;
+    const newEvent = await createEvent(
       title,
       description,
-      image,
-      categoryIds,
       location,
+      image,
       startTime,
-      endTime
+      endTime,
+      createdBy,
+      categoryIds
     );
     res.status(201).json(newEvent);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Something went wrong while creating new event!");
+    next(error);
   }
 });
 

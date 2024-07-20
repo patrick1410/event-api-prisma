@@ -26,6 +26,7 @@ async function main() {
     });
   }
 
+  // Seed many-to-many relations at the last to prevent errors!
   for (const event of events) {
     await prisma.event.upsert({
       where: { id: event.id },

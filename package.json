@@ -17,6 +17,7 @@
     "@sentry/profiling-node": "^8.19.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-oauth2-jwt-bearer": "^1.6.0",
     "jsonwebtoken": "^9.0.2",
     "uuid": "^10.0.0",
     "winston": "^3.13.0"

@@ -15,14 +15,14 @@ datasource db {
 }
 
 model Category {
-  id     String @id @default(uuid())
-  name   String
+  id   String @id @default(uuid())
+  name String
 
   events Event[]
 }
 
 model Event {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   title       String
   description String
   image       String
@@ -34,18 +34,18 @@ model Event {
   categories Category[]
 
   // Relation
-  createdBy  User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdBy User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   // Index
   @@index([userId])
 }
 
 model User {
-  id       String  @id @default(uuid())
-  username String  @unique
+  id       String @id @default(uuid())
+  username String @unique
   password String
   name     String
   image    String
 
-  events   Event[]
+  events Event[]
 }

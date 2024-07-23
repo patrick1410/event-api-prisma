@@ -7,11 +7,9 @@ import { updateEventById } from "../services/events/updateEventById.js";
 import { deleteEvent } from "../services/events/deleteEvent.js";
 
 import authMiddleware from "../middleware/auth.js";
-import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 
 const router = express.Router();
 
-//NEW
 router.get("/", async (req, res, next) => {
   try {
     const { title } = req.query;
@@ -22,7 +20,6 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-//NEW
 router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -38,7 +35,6 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-//NEW
 router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const {
@@ -67,53 +63,59 @@ router.post("/", authMiddleware, async (req, res, next) => {
   }
 });
 
-router.put(
-  "/:id",
-  authMiddleware,
-  (req, res) => {
+router.put("/:id", authMiddleware, async (req, res, next) => {
+  try {
     const { id } = req.params;
     const {
-      createdBy,
       title,
       description,
-      image,
-      categoryIds,
       location,
+      image,
       startTime,
       endTime,
-    } = req.body;
-    const updatedEvent = updateEventById(
-      id,
       createdBy,
+      categoryIds,
+    } = req.body;
+    const event = await updateEventById(id, {
       title,
       description,
-      image,
-      categoryIds,
       location,
+      image,
       startTime,
-      endTime
-    );
-    res.status(200).json(updatedEvent);
-  },
-  notFoundErrorHandler
-);
+      endTime,
+      createdBy,
+      categoryIds,
+    });
 
-router.delete(
-  "/:id",
-  authMiddleware,
-  (req, res) => {
-    const { id } = req.params;
-    const deletedEventId = deleteEvent(id);
-
-    if (!deletedEventId) {
-      res.status(404).send(`Event with id ${id} was not found!`);
+    if (event) {
+      res.status(200).send({
+        message: `Event with id ${id} was updated!`,
+      });
     } else {
-      res.status(200).json({
-        message: `Event with id ${deletedEventId} was deleted!`,
+      res.status(404).json({
+        message: `Event with id ${id} was not found!`,
       });
     }
-  },
-  notFoundErrorHandler
-);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/:id", authMiddleware, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deletedEventId = await deleteEvent(id);
+
+    if (!deletedEventId) {
+      res.status(404).send({ message: `Event with id ${id} was not found!` });
+    } else {
+      res.status(200).json({
+        message: `Event with id ${id} was deleted!`,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;

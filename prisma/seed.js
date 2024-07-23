@@ -27,7 +27,7 @@ async function main() {
   }
 
   // Seed many-to-many relations at the last to prevent errors!
-  // If you do the opposite relation will be empty in this case _CategoryToEvent!
+  // If you do the opposite relation will be empty in this case _CategoryToEvent! <------ DO NOT EDIT THIS COLUMN_NAME IS DB (SUPABASE)!!!
   for (const event of events) {
     await prisma.event.upsert({
       where: { id: event.id },

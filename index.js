@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import express from "express";
 import cors from "cors";
 import eventsRouter from "./routes/eventsRoute.js";
@@ -7,20 +8,24 @@ import loginRouter from "./routes/loginRoute.js";
 import { log } from "./middleware/logMiddleware.js";
 import "dotenv/config";
 import { errorHandler } from "./middleware/errorHandler.js";
-import * as Sentry from "@sentry/node";
-import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
 const app = express();
 
+// SENTRY INIT
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
-  integrations: [nodeProfilingIntegration()],
-  // Performance Monitoring
-  tracesSampleRate: 1.0, //  Capture 100% of the transactions
 
-  // Set sampling rate for profiling - this is relative to tracesSampleRate
-  profilesSampleRate: 1.0,
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Sentry.Integrations.Express({ app }),
+  ],
+
+  // Tracing
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
 });
+
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
 
 // Enable CORS for all origins
 app.use(cors());
@@ -33,6 +38,9 @@ app.use("/events", eventsRouter);
 app.use("/users", usersRouter);
 app.use("/categories", categoryRouter);
 app.use("/login", loginRouter);
+
+// SENTRY ERROR HANDLER
+app.use(Sentry.Handlers.errorHandler());
 
 app.use(errorHandler);
 

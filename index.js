@@ -39,6 +39,11 @@ app.use("/users", usersRouter);
 app.use("/categories", categoryRouter);
 app.use("/login", loginRouter);
 
+// app.get("/test-error", (req, res) => {
+//   // Deliberately throw an error to test Sentry
+//   throw new Error("This is a test error for Sentry!");
+// });
+
 // SENTRY ERROR HANDLER
 app.use(Sentry.Handlers.errorHandler());
 

@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import eventsRouter from "./routes/eventsRoute.js";
 import usersRouter from "./routes/usersRoute.js";
 import categoryRouter from "./routes/categoriesRoute.js";
@@ -20,6 +21,9 @@ Sentry.init({
   // Set sampling rate for profiling - this is relative to tracesSampleRate
   profilesSampleRate: 1.0,
 });
+
+// Enable CORS for all origins
+app.use(cors());
 
 app.use(express.json());
 

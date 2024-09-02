@@ -8,6 +8,9 @@ export const getEvents = async (title) => {
         contains: title,
       },
     },
+    include: {
+      categories: true,
+    },
   });
 
   return events;

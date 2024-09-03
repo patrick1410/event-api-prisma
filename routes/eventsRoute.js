@@ -102,7 +102,8 @@ router.put("/:id", authMiddleware, async (req, res, next) => {
   }
 });
 
-router.delete("/:id", authMiddleware, async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
+  //authMiddleware,
   try {
     const { id } = req.params;
     const deletedEventId = await deleteEvent(id);

@@ -64,7 +64,8 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/:id", authMiddleware, async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
+  //authMiddleware,
   try {
     const { id } = req.params;
     const {

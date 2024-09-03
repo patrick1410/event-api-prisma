@@ -35,7 +35,8 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.post("/", authMiddleware, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
+  //authMiddleware,
   try {
     const {
       title,

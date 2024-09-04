@@ -35,8 +35,7 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
-  //authMiddleware,
+router.post("/", authMiddleware, async (req, res, next) => {
   try {
     const {
       title,
@@ -64,8 +63,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/:id", async (req, res, next) => {
-  //authMiddleware,
+router.put("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const {
@@ -103,8 +101,7 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
-  //authMiddleware,
+router.delete("/:id", authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedEventId = await deleteEvent(id);
